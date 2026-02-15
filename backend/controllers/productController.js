@@ -24,7 +24,7 @@ const createProduct = async (req, res) => {
     let imageUrl = image;
     if (req.file) {
         // Construct URL for the uploaded file
-        imageUrl = `http://localhost:5000/${req.file.path.replace(/\\/g, '/')}`;
+        imageUrl = `https://mygrocery-bcw8.onrender.com/${req.file.path.replace(/\\/g, '/')}`;
     }
 
     try {
@@ -79,7 +79,7 @@ const updateProduct = async (req, res) => {
             product.description = description || product.description;
 
             if (req.file) {
-                product.image = `http://localhost:5000/${req.file.path.replace(/\\/g, '/')}`;
+                product.image = `https://mygrocery-bcw8.onrender.com/${req.file.path.replace(/\\/g, '/')}`;
             }
 
             const updatedProduct = await product.save();

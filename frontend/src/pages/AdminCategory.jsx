@@ -16,7 +16,7 @@ const AdminCategory = () => {
 
     const fetchCategories = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/categories');
+            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/categories');
             setCategories(data);
             setLoading(false);
         } catch (error) {
@@ -47,9 +47,9 @@ const AdminCategory = () => {
             };
 
             if (editMode) {
-                await axios.put(`http://localhost:5000/api/categories/${currentId}`, formData, config);
+                await axios.put(`https://mygrocery-bcw8.onrender.com/api/categories/${currentId}`, formData, config);
             } else {
-                await axios.post('http://localhost:5000/api/categories', formData, config);
+                await axios.post('https://mygrocery-bcw8.onrender.com/api/categories', formData, config);
             }
 
             setName('');
@@ -80,7 +80,7 @@ const AdminCategory = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
-                await axios.delete(`http://localhost:5000/api/categories/${id}`, config);
+                await axios.delete(`https://mygrocery-bcw8.onrender.com/api/categories/${id}`, config);
                 fetchCategories();
             } catch (error) {
                 console.error('Error deleting category:', error);
@@ -172,7 +172,7 @@ const AdminCategory = () => {
                                                 <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
                                                     {cat.image && (
                                                         <img
-                                                            src={`http://localhost:5000/${cat.image}`}
+                                                            src={`https://mygrocery-bcw8.onrender.com/${cat.image}`}
                                                             alt={cat.name}
                                                             className="w-12 h-12 object-cover rounded"
                                                         />

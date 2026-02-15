@@ -24,9 +24,9 @@ const ProductCatalog = () => {
             try {
                 const config = user ? { headers: { Authorization: `Bearer ${user.token}` } } : {};
                 const [prodRes, catRes, listRes] = await Promise.all([
-                    axios.get('http://localhost:5000/api/products'),
-                    axios.get('http://localhost:5000/api/categories'),
-                    user?.role === 'buyer' ? axios.get('http://localhost:5000/api/lists', config) : Promise.resolve({ data: [] })
+                    axios.get('https://mygrocery-bcw8.onrender.com/api/products'),
+                    axios.get('https://mygrocery-bcw8.onrender.com/api/categories'),
+                    user?.role === 'buyer' ? axios.get('https://mygrocery-bcw8.onrender.com/api/lists', config) : Promise.resolve({ data: [] })
                 ]);
                 setProducts(prodRes.data);
                 setFilteredProducts(prodRes.data);
@@ -69,7 +69,7 @@ const ProductCatalog = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.post(`http://localhost:5000/api/lists/${selectedListId}/items`, {
+            await axios.post(`https://mygrocery-bcw8.onrender.com/api/lists/${selectedListId}/items`, {
                 productId: addingToList._id,
                 quantity: qty,
                 unit: addingToList.unit

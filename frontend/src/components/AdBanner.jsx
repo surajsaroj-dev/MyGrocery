@@ -21,7 +21,7 @@ const AdBanner = () => {
 
     const fetchAds = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/advertisements');
+            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/advertisements');
             const bannerAds = data.filter(ad => ad.position === 'banner');
             setAds(bannerAds);
         } catch (error) {

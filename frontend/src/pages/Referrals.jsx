@@ -16,11 +16,11 @@ const Referrals = () => {
                 const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
                 // Fetch basic wallet info (for referral code)
-                const walletRes = await axios.get('http://localhost:5000/api/wallet', config);
+                const walletRes = await axios.get('https://mygrocery-bcw8.onrender.com/api/wallet', config);
                 setWalletData(walletRes.data);
 
                 // Fetch referred users
-                const referralRes = await axios.get('http://localhost:5000/api/users/stats/referrals', config);
+                const referralRes = await axios.get('https://mygrocery-bcw8.onrender.com/api/users/stats/referrals', config);
                 setReferralStats(referralRes.data);
             } catch (error) {
                 console.error('Error fetching referral data:', error);

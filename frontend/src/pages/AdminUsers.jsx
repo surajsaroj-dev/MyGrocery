@@ -22,7 +22,7 @@ const AdminUsers = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const { data } = await axios.get('http://localhost:5000/api/users', config);
+            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/users', config);
             setUsers(data);
             setLoading(false);
         } catch (error) {
@@ -44,7 +44,7 @@ const AdminUsers = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.put(`http://localhost:5000/api/users/${id}/status`, {}, config);
+            await axios.put(`https://mygrocery-bcw8.onrender.com/api/users/${id}/status`, {}, config);
             fetchUsers();
         } catch (error) {
             console.error('Error toggling status:', error);
@@ -70,9 +70,9 @@ const AdminUsers = () => {
             }
 
             if (editMode) {
-                await axios.put(`http://localhost:5000/api/users/${currentId}`, payload, config);
+                await axios.put(`https://mygrocery-bcw8.onrender.com/api/users/${currentId}`, payload, config);
             } else {
-                await axios.post('http://localhost:5000/api/users', payload, config);
+                await axios.post('https://mygrocery-bcw8.onrender.com/api/users', payload, config);
             }
 
             setFormData({ name: '', email: '', password: '', role: 'buyer' });
@@ -103,7 +103,7 @@ const AdminUsers = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
-                await axios.delete(`http://localhost:5000/api/users/${id}`, config);
+                await axios.delete(`https://mygrocery-bcw8.onrender.com/api/users/${id}`, config);
                 fetchUsers();
             } catch (error) {
                 console.error('Error deleting user:', error);

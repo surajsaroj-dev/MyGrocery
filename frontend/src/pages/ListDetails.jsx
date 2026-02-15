@@ -36,16 +36,16 @@ const ListDetails = () => {
                 };
 
                 // Fetch List Details
-                const listRes = await axios.get(`http://localhost:5000/api/lists/${id}`, config);
+                const listRes = await axios.get(`https://mygrocery-bcw8.onrender.com/api/lists/${id}`, config);
                 setList(listRes.data);
 
                 // Fetch Quotations for this list
-                const quotesRes = await axios.get(`http://localhost:5000/api/quotations?listId=${id}`, config);
+                const quotesRes = await axios.get(`https://mygrocery-bcw8.onrender.com/api/quotations?listId=${id}`, config);
                 setQuotations(quotesRes.data);
 
                 // Socket setup
                 if (!activeSocket) {
-                    activeSocket = io('http://localhost:5000', {
+                    activeSocket = io('https://mygrocery-bcw8.onrender.com', {
                         transports: ['polling', 'websocket'],
                         reconnectionAttempts: 5
                     });
@@ -96,7 +96,7 @@ const ListDetails = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const { data } = await axios.post('http://localhost:5000/api/orders', {
+            const { data } = await axios.post('https://mygrocery-bcw8.onrender.com/api/orders', {
                 quotationId: selectedQuote._id,
                 paymentMethod: paymentMethod
             }, config);

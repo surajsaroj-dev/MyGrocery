@@ -20,8 +20,8 @@ const BuyerDashboard = () => {
                 },
             };
             const [listsRes, statsRes] = await Promise.all([
-                axios.get('http://localhost:5000/api/lists', config),
-                axios.get('http://localhost:5000/api/users/stats/referrals', config)
+                axios.get('https://mygrocery-bcw8.onrender.com/api/lists', config),
+                axios.get('https://mygrocery-bcw8.onrender.com/api/users/stats/referrals', config)
             ]);
             setLists(listsRes.data);
             setReferralStats(statsRes.data);
@@ -46,7 +46,7 @@ const BuyerDashboard = () => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            const { data } = await axios.post('http://localhost:5000/api/users/referrals/convert', {}, config);
+            const { data } = await axios.post('https://mygrocery-bcw8.onrender.com/api/users/referrals/convert', {}, config);
 
             // Update auth context wallet balance
             const updatedUser = { ...user, walletBalance: data.walletBalance };

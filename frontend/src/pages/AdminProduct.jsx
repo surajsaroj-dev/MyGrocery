@@ -24,8 +24,8 @@ const AdminProduct = () => {
     const fetchData = async () => {
         try {
             const [prodRes, catRes] = await Promise.all([
-                axios.get('http://localhost:5000/api/products'),
-                axios.get('http://localhost:5000/api/categories')
+                axios.get('https://mygrocery-bcw8.onrender.com/api/products'),
+                axios.get('https://mygrocery-bcw8.onrender.com/api/categories')
             ]);
             setProducts(prodRes.data);
             setCategories(catRes.data);
@@ -68,9 +68,9 @@ const AdminProduct = () => {
             }
 
             if (editMode) {
-                await axios.put(`http://localhost:5000/api/products/${currentId}`, data, config);
+                await axios.put(`https://mygrocery-bcw8.onrender.com/api/products/${currentId}`, data, config);
             } else {
-                await axios.post('http://localhost:5000/api/products', data, config);
+                await axios.post('https://mygrocery-bcw8.onrender.com/api/products', data, config);
             }
 
             setFormData({ name: '', category: '', brand: '', unit: '', description: '', image: '' });
@@ -105,7 +105,7 @@ const AdminProduct = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
-                await axios.delete(`http://localhost:5000/api/products/${id}`, config);
+                await axios.delete(`https://mygrocery-bcw8.onrender.com/api/products/${id}`, config);
                 fetchData();
             } catch (error) {
                 console.error('Error deleting product:', error);

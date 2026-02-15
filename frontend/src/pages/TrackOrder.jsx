@@ -34,7 +34,7 @@ const TrackOrder = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const { data } = await axios.get(`http://localhost:5000/api/orders/${sid}/track`, config);
+            const { data } = await axios.get(`https://mygrocery-bcw8.onrender.com/api/orders/${sid}/track`, config);
             setOrder(data);
         } catch (err) {
             setError(err.response?.data?.message || 'Order not found or access denied');

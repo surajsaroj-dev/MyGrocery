@@ -16,11 +16,11 @@ const VendorDashboard = () => {
         const fetchLists = async () => {
             try {
                 const config = { headers: { Authorization: `Bearer ${user.token}` } };
-                const { data } = await axios.get('http://localhost:5000/api/lists', config);
+                const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/lists', config);
                 setLists(data);
 
                 // Socket setup
-                const socket = io('http://localhost:5000');
+                const socket = io('https://mygrocery-bcw8.onrender.com');
                 socket.on('new_list', (newList) => {
                     setLists(prev => [newList, ...prev]);
                     setNewAlert(true);

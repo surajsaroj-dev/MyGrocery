@@ -36,7 +36,7 @@ const Cart = () => {
                 unit: item.product.unit
             }));
 
-            await axios.post('http://localhost:5000/api/lists', {
+            await axios.post('https://mygrocery-bcw8.onrender.com/api/lists', {
                 title: listTitle,
                 items: itemsPayload
             }, config);

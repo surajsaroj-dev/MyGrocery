@@ -23,7 +23,7 @@ const MyOrders = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const { data } = await axios.get('http://localhost:5000/api/orders', config);
+            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/orders', config);
             setOrders(data);
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -62,13 +62,13 @@ const MyOrders = () => {
             };
 
             // 1. Create Razorpay Order on Backend
-            const { data: orderData } = await axios.post('http://localhost:5000/api/payment/create-order', { orderId }, config);
+            const { data: orderData } = await axios.post('https://mygrocery-bcw8.onrender.com/api/payment/create-order', { orderId }, config);
 
             // 2. Handle Mock Payment
             if (orderData.isMock) {
                 console.log('Mock Payment Detected. Auto-verifying...');
                 try {
-                    await axios.post('http://localhost:5000/api/payment/verify', {
+                    await axios.post('https://mygrocery-bcw8.onrender.com/api/payment/verify', {
                         razorpay_order_id: orderData.id,
                         razorpay_payment_id: `mock_pay_${Date.now()}`,
                         razorpay_signature: 'mock_signature',
@@ -94,7 +94,7 @@ const MyOrders = () => {
                 handler: async function (response) {
                     // 3. Verify Payment
                     try {
-                        await axios.post('http://localhost:5000/api/payment/verify', {
+                        await axios.post('https://mygrocery-bcw8.onrender.com/api/payment/verify', {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature,
@@ -132,7 +132,7 @@ const MyOrders = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.put(`http://localhost:5000/api/orders/${orderId}/status`, { status: newStatus }, config);
+            await axios.put(`https://mygrocery-bcw8.onrender.com/api/orders/${orderId}/status`, { status: newStatus }, config);
             fetchOrders();
         } catch (error) {
             console.error('Error updating status:', error);

@@ -17,7 +17,7 @@ const AdminOrders = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
-                const { data } = await axios.get('http://localhost:5000/api/orders', config);
+                const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/orders', config);
                 setOrders(data);
                 setLoading(false);
             } catch (error) {

@@ -19,7 +19,7 @@ const Settings = () => {
     });
 
     const [imageFile, setImageFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(user?.profileImage ? `http://localhost:5000/${user.profileImage}` : null);
+    const [imagePreview, setImagePreview] = useState(user?.profileImage ? `https://mygrocery-bcw8.onrender.com/${user.profileImage}` : null);
 
     useEffect(() => {
         if (user) {
@@ -32,7 +32,7 @@ const Settings = () => {
                 confirmPassword: ''
             });
             if (user.profileImage) {
-                setImagePreview(`http://localhost:5000/${user.profileImage}`);
+                setImagePreview(`https://mygrocery-bcw8.onrender.com/${user.profileImage}`);
             }
         }
     }, [user]);
@@ -80,7 +80,7 @@ const Settings = () => {
                 data.append('profileImage', imageFile);
             }
 
-            const res = await axios.put('http://localhost:5000/api/users/profile', data, config);
+            const res = await axios.put('https://mygrocery-bcw8.onrender.com/api/users/profile', data, config);
 
             // Update auth context
             const updatedUser = { ...user, ...res.data };

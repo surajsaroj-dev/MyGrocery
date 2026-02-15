@@ -10,7 +10,7 @@ const LandingPage = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const { data } = await axios.get('http://localhost:5000/api/categories');
+                const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/categories');
                 setCategories(data.slice(0, 6)); // Show top 6 categories
             } catch (error) {
                 console.error('Error fetching categories:', error);

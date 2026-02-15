@@ -10,7 +10,7 @@ const AdSidebar = () => {
 
     const fetchAds = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/advertisements');
+            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/advertisements');
             const sidebarAds = data.filter(ad => ad.position === 'sidebar');
             setAds(sidebarAds);
         } catch (error) {

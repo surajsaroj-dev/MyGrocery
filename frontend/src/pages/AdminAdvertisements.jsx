@@ -31,7 +31,7 @@ const AdminAdvertisements = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const { data } = await axios.get('http://localhost:5000/api/advertisements/all', config);
+            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/advertisements/all', config);
             setAds(data);
             setLoading(false);
         } catch (error) {
@@ -48,9 +48,9 @@ const AdminAdvertisements = () => {
             };
 
             if (editingAd) {
-                await axios.put(`http://localhost:5000/api/advertisements/${editingAd._id}`, formData, config);
+                await axios.put(`https://mygrocery-bcw8.onrender.com/api/advertisements/${editingAd._id}`, formData, config);
             } else {
-                await axios.post('http://localhost:5000/api/advertisements', formData, config);
+                await axios.post('https://mygrocery-bcw8.onrender.com/api/advertisements', formData, config);
             }
 
             setShowForm(false);
@@ -93,7 +93,7 @@ const AdminAdvertisements = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.delete(`http://localhost:5000/api/advertisements/${id}`, config);
+            await axios.delete(`https://mygrocery-bcw8.onrender.com/api/advertisements/${id}`, config);
             fetchAds();
         } catch (error) {
             console.error('Error deleting ad:', error);
@@ -106,7 +106,7 @@ const AdminAdvertisements = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.put(`http://localhost:5000/api/advertisements/${ad._id}`,
+            await axios.put(`https://mygrocery-bcw8.onrender.com/api/advertisements/${ad._id}`,
                 { ...ad, isActive: !ad.isActive },
                 config
             );

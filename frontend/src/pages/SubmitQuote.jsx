@@ -21,7 +21,7 @@ const SubmitQuote = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
-                const { data } = await axios.get(`http://localhost:5000/api/lists/${listId}`, config);
+                const { data } = await axios.get(`https://mygrocery-bcw8.onrender.com/api/lists/${listId}`, config);
                 setList(data);
 
                 // Initialize prices state with basePrice and discount
@@ -92,7 +92,7 @@ const SubmitQuote = () => {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
 
-            await axios.post('http://localhost:5000/api/quotations', {
+            await axios.post('https://mygrocery-bcw8.onrender.com/api/quotations', {
                 listId,
                 prices: priceArray,
                 validUntil: validUntil || null

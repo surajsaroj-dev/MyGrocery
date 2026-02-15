@@ -156,7 +156,7 @@ const Navbar = () => {
                                         <div className="h-9 w-9 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 overflow-hidden border border-gray-100">
                                             {user.profileImage ? (
                                                 <img
-                                                    src={`http://localhost:5000/${user.profileImage}`}
+                                                    src={`https://mygrocery-bcw8.onrender.com/${user.profileImage}`}
                                                     alt="Profile"
                                                     className="h-full w-full object-cover"
                                                 />

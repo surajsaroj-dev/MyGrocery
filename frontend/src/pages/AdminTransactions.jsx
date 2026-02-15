@@ -19,7 +19,7 @@ const AdminTransactions = () => {
         try {
             console.log('Fetching all transactions for admin...');
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            const { data } = await axios.get('http://localhost:5000/api/wallet/all', config);
+            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/wallet/all', config);
             console.log('Transactions received:', data);
             setTransactions(data);
         } catch (error) {

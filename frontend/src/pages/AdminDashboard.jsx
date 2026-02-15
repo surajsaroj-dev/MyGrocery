@@ -16,7 +16,7 @@ const AdminDashboard = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const { data } = await axios.get('http://localhost:5000/api/users', config);
+            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/users', config);
             setUsers(data);
             setLoading(false);
         } catch (error) {
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const { data } = await axios.get('http://localhost:5000/api/analytics', config);
+            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/analytics', config);
             setAnalytics(data);
         } catch (error) {
             console.error('Error fetching analytics:', error);
@@ -47,7 +47,7 @@ const AdminDashboard = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.put(`http://localhost:5000/api/users/${id}/verify`, {}, config);
+            await axios.put(`https://mygrocery-bcw8.onrender.com/api/users/${id}/verify`, {}, config);
             fetchUsers();
         } catch (error) {
             console.error('Error verifying user:', error);
@@ -61,7 +61,7 @@ const AdminDashboard = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
-                await axios.delete(`http://localhost:5000/api/users/${id}`, config);
+                await axios.delete(`https://mygrocery-bcw8.onrender.com/api/users/${id}`, config);
                 setUsers(users.filter(u => u._id !== id));
             } catch (error) {
                 console.error('Error deleting user:', error);
