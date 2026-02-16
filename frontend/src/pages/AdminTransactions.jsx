@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../api/config';
 import AuthContext from '../context/AuthContext';
 import { CreditCard, ArrowUpRight, ArrowDownLeft, User, ShoppingBag, ExternalLink, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,7 @@ const AdminTransactions = () => {
         try {
             console.log('Fetching all transactions for admin...');
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/wallet/all', config);
+            const { data } = await api.get('/api/wallet/all', config);
             console.log('Transactions received:', data);
             setTransactions(data);
         } catch (error) {

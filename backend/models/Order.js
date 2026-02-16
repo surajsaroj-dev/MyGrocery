@@ -16,6 +16,10 @@ const orderSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
+    logisticsId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
     totalAmount: {
         type: Number,
         required: true,
@@ -32,7 +36,7 @@ const orderSchema = new mongoose.Schema({
     },
     deliveryStatus: {
         type: String,
-        enum: ['pending', 'shipped', 'delivered'],
+        enum: ['pending', 'processing', 'shipped', 'dispatched', 'delivered'],
         default: 'pending',
     },
 }, { timestamps: true });

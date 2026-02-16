@@ -15,7 +15,8 @@ const generateToken = (id) => {
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = async (req, res) => {
-    const { name, email, password, role, address, phone, referralByCode } = req.body;
+    const { name, email, password, role, address, phone, referralByCode, referredBy: referredByCodeLegacy } = req.body;
+    const referralCodeToUse = referralByCode || referredByCodeLegacy;
 
     try {
         const userExists = await User.findOne({ email });
@@ -35,8 +36,8 @@ const registerUser = async (req, res) => {
         let initialRewards = 0;
         const Transaction = require('../models/Transaction');
 
-        if (referralByCode) {
-            const referrer = await User.findOne({ referralCode: referralByCode });
+        if (referralCodeToUse) {
+            const referrer = await User.findOne({ referralCode: referralCodeToUse });
             if (referrer) {
                 referredBy = referrer._id;
                 initialRewards = 50; // New user gets 50 points
@@ -89,6 +90,7 @@ const registerUser = async (req, res) => {
                 address: user.address,
                 profileImage: user.profileImage,
                 referralRewards: user.referralRewards,
+                referralCode: user.referralCode,
                 token: generateToken(user._id),
             });
         } else {
@@ -121,8 +123,8 @@ const loginUser = async (req, res) => {
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (isMatch) {
-            if (user.role === 'vendor' && !user.isVerified) {
-                console.log('Login failed: Vendor not verified');
+            if ((user.role === 'vendor' || user.role === 'logistics') && !user.isVerified) {
+                console.log(`Login failed: ${user.role} not verified`);
                 return res.status(401).json({ message: 'Your account is pending approval from Admin.' });
             }
             console.log('Login successful:', user._id);
@@ -134,6 +136,7 @@ const loginUser = async (req, res) => {
                 phone: user.phone,
                 address: user.address,
                 profileImage: user.profileImage,
+                referralCode: user.referralCode,
                 token: generateToken(user._id),
             });
         } else {

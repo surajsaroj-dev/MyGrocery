@@ -76,10 +76,23 @@ const getOrders = async (req, res) => {
             orders = await Order.find({})
                 .populate('buyerId', 'name email phone address')
                 .populate('vendorId', 'name email phone')
+                .populate('logisticsId', 'name email phone')
                 .populate({
                     path: 'quotationId',
                     populate: [
                         { path: 'originalListId', populate: { path: 'items.product', model: 'Product' } },
+                        { path: 'prices.product', select: 'image brand' }
+                    ]
+                })
+                .sort({ createdAt: -1 });
+        } else if (req.user.role === 'logistics') {
+            orders = await Order.find({ logisticsId: req.user._id })
+                .populate('buyerId', 'name email phone address')
+                .populate('vendorId', 'name email phone')
+                .populate({
+                    path: 'quotationId',
+                    populate: [
+                        { path: 'originalListId' },
                         { path: 'prices.product', select: 'image brand' }
                     ]
                 })
@@ -137,7 +150,6 @@ const updateOrderStatus = async (req, res) => {
 
 const trackOrder = async (req, res) => {
     const orderId = req.params.id;
-    console.log(`[DEBUG] Tracking attempt for ID: ${orderId} by user: ${req.user._id}`);
     try {
         const order = await Order.findById(orderId)
             .populate('vendorId', 'name')
@@ -170,10 +182,47 @@ const trackOrder = async (req, res) => {
     }
 };
 
+const assignLogistics = async (req, res) => {
+    const { logisticsId } = req.body;
+    try {
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        order.logisticsId = logisticsId;
+        const updatedOrder = await order.save();
+        res.json(updatedOrder);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const updateLogisticsStatus = async (req, res) => {
+    const { status } = req.body;
+    try {
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        if (order.logisticsId?.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'Not authorized' });
+        }
+
+        order.deliveryStatus = status;
+        const updatedOrder = await order.save();
+        res.json(updatedOrder);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     createOrder,
     getOrders,
     updateOrderToPaid,
     updateOrderStatus,
-    trackOrder
+    trackOrder,
+    assignLogistics,
+    updateLogisticsStatus
 };

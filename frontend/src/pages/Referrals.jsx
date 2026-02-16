@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../api/config';
 import AuthContext from '../context/AuthContext';
 
 import { Users, Gift, Share2, TrendingUp, Copy, CheckCircle } from 'lucide-react';
@@ -16,12 +16,12 @@ const Referrals = () => {
                 const config = { headers: { Authorization: `Bearer ${user.token}` } };
 
                 // Fetch basic wallet info (for referral code)
-                const walletRes = await axios.get('https://mygrocery-bcw8.onrender.com/api/wallet', config);
+                const walletRes = await api.get('/api/wallet', config);
                 setWalletData(walletRes.data);
 
                 // Fetch referred users
-                const referralRes = await axios.get('https://mygrocery-bcw8.onrender.com/api/users/stats/referrals', config);
-                setReferralStats(referralRes.data);
+                const referralRes = await api.get('/api/users/stats/referrals', config);
+                setReferralStats(referralRes.data.history || []);
             } catch (error) {
                 console.error('Error fetching referral data:', error);
             } finally {

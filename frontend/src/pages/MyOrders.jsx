@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api, { API_URL } from '../api/config';
 import AuthContext from '../context/AuthContext';
 import { Package, Truck, Copy, Check } from 'lucide-react';
 
@@ -23,7 +23,7 @@ const MyOrders = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/orders', config);
+            const { data } = await api.get('/api/orders', config);
             setOrders(data);
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -62,13 +62,13 @@ const MyOrders = () => {
             };
 
             // 1. Create Razorpay Order on Backend
-            const { data: orderData } = await axios.post('https://mygrocery-bcw8.onrender.com/api/payment/create-order', { orderId }, config);
+            const { data: orderData } = await api.post('/api/payment/create-order', { orderId }, config);
 
             // 2. Handle Mock Payment
             if (orderData.isMock) {
                 console.log('Mock Payment Detected. Auto-verifying...');
                 try {
-                    await axios.post('https://mygrocery-bcw8.onrender.com/api/payment/verify', {
+                    await api.post('/api/payment/verify', {
                         razorpay_order_id: orderData.id,
                         razorpay_payment_id: `mock_pay_${Date.now()}`,
                         razorpay_signature: 'mock_signature',
@@ -94,7 +94,7 @@ const MyOrders = () => {
                 handler: async function (response) {
                     // 3. Verify Payment
                     try {
-                        await axios.post('https://mygrocery-bcw8.onrender.com/api/payment/verify', {
+                        await api.post('/api/payment/verify', {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature,
@@ -132,11 +132,11 @@ const MyOrders = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.put(`https://mygrocery-bcw8.onrender.com/api/orders/${orderId}/status`, { status: newStatus }, config);
+            await api.put(`/api/orders/${orderId}/status`, { status: newStatus }, config);
             fetchOrders();
         } catch (error) {
-            console.error('Error updating status:', error);
-            alert('Failed to update status');
+            console.error('Error updating status:', error.response?.data || error);
+            alert(`Failed to update status: ${error.response?.data?.message || error.message}`);
         }
     };
 
@@ -151,11 +151,14 @@ const MyOrders = () => {
             case 'pending': return 'bg-yellow-100 text-yellow-800';
             case 'paid': return 'bg-green-100 text-green-800';
             case 'processing': return 'bg-blue-100 text-blue-800';
+            case 'shipped': return 'bg-indigo-100 text-indigo-800';
             case 'dispatched': return 'bg-purple-100 text-purple-800';
             case 'delivered': return 'bg-green-100 text-green-800';
             default: return 'bg-gray-100 text-gray-800';
         }
     };
+
+    if (!user) return null;
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
@@ -341,6 +344,7 @@ const MyOrders = () => {
                                                                 >
                                                                     <option value="pending">Pending</option>
                                                                     <option value="processing">Processing</option>
+                                                                    <option value="shipped">Shipped</option>
                                                                     <option value="dispatched">Dispatched</option>
                                                                     <option value="delivered">Delivered</option>
                                                                 </select>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/config';
 
 const ResetPassword = () => {
     const location = useLocation();
@@ -23,7 +23,7 @@ const ResetPassword = () => {
         }
 
         try {
-            const { data } = await axios.post('https://mygrocery-bcw8.onrender.com/api/auth/resetpassword', {
+            const { data } = await api.post('/api/auth/resetpassword', {
                 email,
                 otp,
                 newPassword

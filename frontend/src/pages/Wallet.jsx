@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../api/config';
 import AuthContext from '../context/AuthContext';
 
 import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, CreditCard, Plus } from 'lucide-react';
@@ -18,7 +18,7 @@ const Wallet = () => {
     const fetchWalletData = async () => {
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/wallet', config);
+            const { data } = await api.get('/api/wallet', config);
             setWalletData(data);
         } catch (error) {
             console.error('Error fetching wallet data:', error);
@@ -46,13 +46,13 @@ const Wallet = () => {
 
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            const { data } = await axios.post('https://mygrocery-bcw8.onrender.com/api/wallet/recharge', { amount: rechargeAmount }, config);
+            const { data } = await api.post('/api/wallet/recharge', { amount: rechargeAmount }, config);
 
             // 1. Handle Mock Recharge
             if (data.isMock) {
                 console.log('Mock Recharge Detected. Auto-verifying...');
                 try {
-                    await axios.post('https://mygrocery-bcw8.onrender.com/api/wallet/verify', {
+                    await api.post('/api/wallet/verify', {
                         razorpay_order_id: data.id,
                         razorpay_payment_id: `mock_pay_${Date.now()}`,
                         razorpay_signature: 'mock_signature'
@@ -78,7 +78,7 @@ const Wallet = () => {
                 order_id: data.id,
                 handler: async function (response) {
                     try {
-                        await axios.post('https://mygrocery-bcw8.onrender.com/api/wallet/verify', {
+                        await api.post('/api/wallet/verify', {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature

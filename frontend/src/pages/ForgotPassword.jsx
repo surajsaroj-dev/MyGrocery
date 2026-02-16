@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/config';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -14,7 +14,7 @@ const ForgotPassword = () => {
         setMessage('');
 
         try {
-            const { data } = await axios.post('https://mygrocery-bcw8.onrender.com/api/auth/forgotpassword', { email });
+            const { data } = await api.post('/api/auth/forgotpassword', { email });
             setMessage(data.message);
             setTimeout(() => {
                 navigate('/reset-password', { state: { email } });

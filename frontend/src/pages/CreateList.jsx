@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/config';
 import AuthContext from '../context/AuthContext';
 
 import { Plus, Trash2, Search } from 'lucide-react';
@@ -18,7 +18,7 @@ const CreateList = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/products');
+                const { data } = await api.get('/api/products');
                 setMasterProducts(data);
             } catch (error) {
                 console.error('Error fetching master products:', error);
@@ -103,7 +103,7 @@ const CreateList = () => {
             const expiredAt = new Date();
             expiredAt.setHours(expiredAt.getHours() + parseInt(duration));
 
-            await axios.post('https://mygrocery-bcw8.onrender.com/api/lists', {
+            await api.post('/api/lists', {
                 title,
                 expectedPrice: parseFloat(expectedPrice),
                 expiredAt,

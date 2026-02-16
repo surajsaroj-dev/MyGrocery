@@ -11,7 +11,7 @@ const Register = () => {
         role: 'buyer',
         address: '',
         phone: '',
-        referredBy: ''
+        referralByCode: ''
     });
     const { register } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -168,6 +168,7 @@ const Register = () => {
                                 >
                                     <option value="buyer">🛍️ Buyer / Customer</option>
                                     <option value="vendor">🏪 Vendor / Seller</option>
+                                    <option value="logistics">🚚 Logistics Partner</option>
                                 </select>
                             </div>
 
@@ -183,10 +184,10 @@ const Register = () => {
                                     </div>
                                     <input
                                         type="text"
-                                        name="referredBy"
+                                        name="referralByCode"
                                         placeholder="Optional code"
                                         className="w-full pl-12 pr-4 py-4 bg-blue-50/50 border-2 border-dashed border-blue-200 rounded-[24px] font-black text-blue-600 placeholder:text-blue-300 outline-none focus:bg-white focus:border-blue-600 focus:border-solid transition-all"
-                                        value={formData.referredBy}
+                                        value={formData.referralByCode}
                                         onChange={handleChange}
                                     />
                                 </div>

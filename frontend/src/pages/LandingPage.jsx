@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { ShoppingCart, Users, TrendingUp, ShieldCheck, ChevronRight } from 'lucide-react';
+import api, { API_URL } from '../api/config';
+import { ShoppingCart, Users, TrendingUp, ShieldCheck, ChevronRight, Package } from 'lucide-react';
 import AdBanner from '../components/AdBanner';
 
 const LandingPage = () => {
@@ -10,7 +10,7 @@ const LandingPage = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/categories');
+                const { data } = await api.get('/api/categories');
                 setCategories(data.slice(0, 6)); // Show top 6 categories
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -86,28 +86,47 @@ const LandingPage = () => {
                     <h2 className="mb-4 text-3xl font-bold text-gray-800">Shop by Category</h2>
                     <p className="mb-12 text-gray-600">Discover quality products across all our specialties.</p>
 
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6 mb-12">
+                    <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6 mb-12">
                         {categories.length > 0 ? (
                             categories.map((cat) => (
                                 <Link
                                     key={cat._id}
                                     to="/catalog"
-                                    className="group p-6 text-center border rounded-xl hover:border-green-500 hover:shadow-lg transition-all"
+                                    className="group relative h-48 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
                                 >
-                                    <div className="w-12 h-12 mx-auto mb-3 text-green-600 transform group-hover:scale-110 transition-transform">
-                                        <ShoppingCart size={40} strokeWidth={1.5} />
+                                    {/* Background Image */}
+                                    <div className="absolute inset-0">
+                                        {cat.image ? (
+                                            <img
+                                                src={`${API_URL}/${cat.image}`}
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                alt={cat.name}
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gradient-to-br from-green-100 to-green-50 flex items-center justify-center">
+                                                <Package className="text-green-200" size={48} />
+                                            </div>
+                                        )}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:from-green-900/90 transition-all duration-500"></div>
                                     </div>
-                                    <span className="font-semibold text-gray-700 block text-sm">{cat.name}</span>
+
+                                    {/* Content Overlay */}
+                                    <div className="absolute inset-x-0 bottom-0 p-4 text-center">
+                                        <div className="w-10 h-10 mx-auto mb-2 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                                            <ShoppingCart size={18} />
+                                        </div>
+                                        <span className="font-black text-white block text-sm tracking-wide uppercase drop-shadow-md">
+                                            {cat.name}
+                                        </span>
+                                    </div>
                                 </Link>
                             ))
                         ) : (
                             // Placeholder categories if none added yet
                             ['Cereals', 'Dairy', 'Spices', 'Cleaning', 'Personal Care', 'Beverages'].map((name, i) => (
-                                <div key={i} className="group p-6 text-center border rounded-xl opacity-60">
-                                    <div className="w-12 h-12 mx-auto mb-3 text-gray-400">
-                                        <ShoppingCart size={40} />
-                                    </div>
-                                    <span className="font-semibold text-gray-400 block text-sm">{name}</span>
+                                <div key={i} className="relative h-48 rounded-3xl overflow-hidden bg-gray-100 border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-6 grayscale opacity-60">
+                                    <ShoppingCart size={32} className="text-gray-300 mb-3" />
+                                    <span className="font-bold text-gray-400 block text-xs tracking-widest uppercase">{name}</span>
                                 </div>
                             ))
                         )}

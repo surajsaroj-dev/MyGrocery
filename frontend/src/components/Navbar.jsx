@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { API_URL } from '../api/config';
 import AuthContext from '../context/AuthContext';
 import {
     LogOut,
@@ -156,7 +157,7 @@ const Navbar = () => {
                                         <div className="h-9 w-9 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 overflow-hidden border border-gray-100">
                                             {user.profileImage ? (
                                                 <img
-                                                    src={`https://mygrocery-bcw8.onrender.com/${user.profileImage}`}
+                                                    src={`${API_URL}/${user.profileImage}`}
                                                     alt="Profile"
                                                     className="h-full w-full object-cover"
                                                 />

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../api/config';
 import AuthContext from '../context/AuthContext';
 import { Trash2, Plus, Edit, Power, CheckCircle, CircleSlash } from 'lucide-react';
 
@@ -10,6 +10,14 @@ const AdminUsers = () => {
     const [editMode, setEditMode] = useState(false);
     const [currentId, setCurrentId] = useState(null);
 
+    // Filter states
+    const [keyword, setKeyword] = useState('');
+    const [page, setPage] = useState(1);
+    const [pages, setPages] = useState(1);
+    const [total, setTotal] = useState(0);
+    const [sortBy, setSortBy] = useState('createdAt');
+    const [sortOrder, setSortOrder] = useState('desc');
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -18,12 +26,22 @@ const AdminUsers = () => {
     });
 
     const fetchUsers = async () => {
+        if (!user || !user.token) return;
         try {
+            setLoading(true);
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
+                params: {
+                    keyword,
+                    page,
+                    sortBy,
+                    sortOrder
+                }
             };
-            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/users', config);
-            setUsers(data);
+            const { data } = await api.get('/api/users', config);
+            setUsers(data.users || []);
+            setPages(data.pages || 1);
+            setTotal(data.total || 0);
             setLoading(false);
         } catch (error) {
             console.error('Error fetching users:', error);
@@ -33,7 +51,7 @@ const AdminUsers = () => {
 
     useEffect(() => {
         fetchUsers();
-    }, []);
+    }, [user, keyword, page, sortBy, sortOrder]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,7 +62,7 @@ const AdminUsers = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.put(`https://mygrocery-bcw8.onrender.com/api/users/${id}/status`, {}, config);
+            await api.put(`/api/users/${id}/status`, {}, config);
             fetchUsers();
         } catch (error) {
             console.error('Error toggling status:', error);
@@ -70,9 +88,9 @@ const AdminUsers = () => {
             }
 
             if (editMode) {
-                await axios.put(`https://mygrocery-bcw8.onrender.com/api/users/${currentId}`, payload, config);
+                await api.put(`/api/users/${currentId}`, payload, config);
             } else {
-                await axios.post('https://mygrocery-bcw8.onrender.com/api/users', payload, config);
+                await api.post('/api/users', payload, config);
             }
 
             setFormData({ name: '', email: '', password: '', role: 'buyer' });
@@ -103,7 +121,7 @@ const AdminUsers = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
-                await axios.delete(`https://mygrocery-bcw8.onrender.com/api/users/${id}`, config);
+                await api.delete(`/api/users/${id}`, config);
                 fetchUsers();
             } catch (error) {
                 console.error('Error deleting user:', error);
@@ -166,8 +184,23 @@ const AdminUsers = () => {
 
                     <div className="lg:col-span-2">
                         <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
-                            <div className="p-6 border-b border-gray-100">
-                                <h2 className="text-xl font-black text-gray-800">Existing Users</h2>
+                            <div className="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                <div>
+                                    <h2 className="text-xl font-black text-gray-800">Existing Users</h2>
+                                    <p className="text-xs font-bold text-gray-500 mt-1">Total: {total} users</p>
+                                </div>
+                                <div className="relative flex-grow max-w-md">
+                                    <input
+                                        type="text"
+                                        placeholder="Search by name or email..."
+                                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                                        value={keyword}
+                                        onChange={(e) => {
+                                            setKeyword(e.target.value);
+                                            setPage(1); // Reset to first page on search
+                                        }}
+                                    />
+                                </div>
                             </div>
                             {loading ? (
                                 <div className="p-6 text-center text-gray-500">Loading users...</div>
@@ -176,15 +209,48 @@ const AdminUsers = () => {
                                     <table className="w-full">
                                         <thead className="bg-gray-50/50">
                                             <tr>
-                                                <th className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">Name</th>
-                                                <th className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">Email</th>
-                                                <th className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">Role</th>
+                                                <th
+                                                    className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-blue-600"
+                                                    onClick={() => {
+                                                        setSortBy('name');
+                                                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                                                    }}
+                                                >
+                                                    Name {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                                </th>
+                                                <th
+                                                    className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-blue-600"
+                                                    onClick={() => {
+                                                        setSortBy('email');
+                                                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                                                    }}
+                                                >
+                                                    Email {sortBy === 'email' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                                </th>
+                                                <th
+                                                    className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-blue-600"
+                                                    onClick={() => {
+                                                        setSortBy('role');
+                                                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                                                    }}
+                                                >
+                                                    Role {sortBy === 'role' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                                </th>
+                                                <th
+                                                    className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-blue-600"
+                                                    onClick={() => {
+                                                        setSortBy('createdAt');
+                                                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                                                    }}
+                                                >
+                                                    Joined {sortBy === 'createdAt' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                                </th>
                                                 <th className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">Status</th>
                                                 <th className="px-6 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-100">
-                                            {users.map((u) => (
+                                            {users?.map((u) => (
                                                 <tr key={u._id} className={`hover:bg-gray-50/50 transition-colors ${!u.isActive ? 'opacity-60 bg-gray-50' : ''}`}>
                                                     <td className="px-6 py-4">
                                                         <div className="text-sm font-bold text-gray-800">{u.name}</div>
@@ -198,6 +264,9 @@ const AdminUsers = () => {
                                                             }`}>
                                                             {u.role}
                                                         </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-xs font-bold text-gray-500">
+                                                        {new Date(u.createdAt).toLocaleDateString()}
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         <div className={`flex items-center gap-1.5 text-xs font-black uppercase tracking-widest ${u.isActive !== false ? 'text-green-600' : 'text-red-500'}`}>
@@ -230,6 +299,35 @@ const AdminUsers = () => {
                                             ))}
                                         </tbody>
                                     </table>
+                                </div>
+                            )}
+
+                            {/* Pagination Controls */}
+                            {!loading && pages > 1 && (
+                                <div className="p-6 border-t border-gray-100 flex items-center justify-center gap-2">
+                                    <button
+                                        disabled={page === 1}
+                                        onClick={() => setPage(page - 1)}
+                                        className="px-4 py-2 border border-gray-200 rounded-xl disabled:opacity-50 hover:bg-gray-50 font-bold"
+                                    >
+                                        Prev
+                                    </button>
+                                    {[...Array(pages).keys()].map((p) => (
+                                        <button
+                                            key={p + 1}
+                                            onClick={() => setPage(p + 1)}
+                                            className={`w-10 h-10 rounded-xl font-bold transition-all ${page === p + 1 ? 'bg-blue-600 text-white' : 'hover:bg-blue-50 text-gray-600'}`}
+                                        >
+                                            {p + 1}
+                                        </button>
+                                    ))}
+                                    <button
+                                        disabled={page === pages}
+                                        onClick={() => setPage(page + 1)}
+                                        className="px-4 py-2 border border-gray-200 rounded-xl disabled:opacity-50 hover:bg-gray-50 font-bold"
+                                    >
+                                        Next
+                                    </button>
                                 </div>
                             )}
                         </div>

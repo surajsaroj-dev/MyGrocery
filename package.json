@@ -1,0 +1,24 @@
+{
+  "name": "monthly-grocery-platform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+  "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\""
+}
+,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/surajsaroj-dev/MyGrocery.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/surajsaroj-dev/MyGrocery/issues"
+  },
+  "homepage": "https://github.com/surajsaroj-dev/MyGrocery#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

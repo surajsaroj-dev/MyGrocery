@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import axios from 'axios';
+import api, { API_URL } from '../api/config';
 import AuthContext from '../context/AuthContext';
 import { User, Mail, MapPin, Phone, Lock, Camera, Loader2, Save } from 'lucide-react';
 
@@ -19,7 +19,7 @@ const Settings = () => {
     });
 
     const [imageFile, setImageFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(user?.profileImage ? `https://mygrocery-bcw8.onrender.com/${user.profileImage}` : null);
+    const [imagePreview, setImagePreview] = useState(user?.profileImage ? `${API_URL}/${user.profileImage}` : null);
 
     useEffect(() => {
         if (user) {
@@ -32,7 +32,7 @@ const Settings = () => {
                 confirmPassword: ''
             });
             if (user.profileImage) {
-                setImagePreview(`https://mygrocery-bcw8.onrender.com/${user.profileImage}`);
+                setImagePreview(`${API_URL}/${user.profileImage}`);
             }
         }
     }, [user]);
@@ -80,7 +80,7 @@ const Settings = () => {
                 data.append('profileImage', imageFile);
             }
 
-            const res = await axios.put('https://mygrocery-bcw8.onrender.com/api/users/profile', data, config);
+            const res = await api.put('/api/users/profile', data, config);
 
             // Update auth context
             const updatedUser = { ...user, ...res.data };

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/config';
 import AuthContext from '../context/AuthContext';
 import { Search, Package, Truck, CheckCircle, Clock, MapPin, SearchSlash, Copy, Check } from 'lucide-react';
 
@@ -34,7 +34,7 @@ const TrackOrder = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const { data } = await axios.get(`https://mygrocery-bcw8.onrender.com/api/orders/${sid}/track`, config);
+            const { data } = await api.get(`/api/orders/${sid}/track`, config);
             setOrder(data);
         } catch (err) {
             setError(err.response?.data?.message || 'Order not found or access denied');
@@ -51,7 +51,9 @@ const TrackOrder = () => {
 
     const steps = [
         { status: 'pending', label: 'Order Placed', icon: Clock, color: 'blue' },
+        { status: 'processing', label: 'Processing', icon: Package, color: 'blue' },
         { status: 'shipped', label: 'Shipped', icon: Truck, color: 'indigo' },
+        { status: 'dispatched', label: 'Dispatched', icon: Truck, color: 'indigo' },
         { status: 'delivered', label: 'Delivered', icon: CheckCircle, color: 'green' },
     ];
 

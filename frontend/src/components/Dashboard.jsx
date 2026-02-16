@@ -3,6 +3,7 @@ import AuthContext from '../context/AuthContext';
 import BuyerDashboard from '../pages/BuyerDashboard';
 import VendorDashboard from '../pages/VendorDashboard';
 import AdminDashboard from '../pages/AdminDashboard';
+import LogisticsDashboard from '../pages/LogisticsDashboard';
 import LandingPage from '../pages/LandingPage';
 
 const Dashboard = () => {
@@ -17,6 +18,7 @@ const Dashboard = () => {
     if (user.role === 'buyer') return <BuyerDashboard />;
     if (user.role === 'vendor') return <VendorDashboard />;
     if (user.role === 'admin') return <AdminDashboard />;
+    if (user.role === 'logistics') return <LogisticsDashboard />;
 
     return <div>Unknown Role</div>;
 };

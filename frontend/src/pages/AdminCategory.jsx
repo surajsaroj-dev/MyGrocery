@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api, { API_URL } from '../api/config';
 import AuthContext from '../context/AuthContext';
 
 import { Trash2, Plus, Edit } from 'lucide-react';
@@ -16,7 +16,7 @@ const AdminCategory = () => {
 
     const fetchCategories = async () => {
         try {
-            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/categories');
+            const { data } = await api.get('/api/categories');
             setCategories(data);
             setLoading(false);
         } catch (error) {
@@ -42,14 +42,13 @@ const AdminCategory = () => {
             const config = {
                 headers: {
                     Authorization: `Bearer ${user.token}`,
-                    'Content-Type': 'multipart/form-data',
                 },
             };
 
             if (editMode) {
-                await axios.put(`https://mygrocery-bcw8.onrender.com/api/categories/${currentId}`, formData, config);
+                await api.put(`/api/categories/${currentId}`, formData, config);
             } else {
-                await axios.post('https://mygrocery-bcw8.onrender.com/api/categories', formData, config);
+                await api.post('/api/categories', formData, config);
             }
 
             setName('');
@@ -80,7 +79,7 @@ const AdminCategory = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
-                await axios.delete(`https://mygrocery-bcw8.onrender.com/api/categories/${id}`, config);
+                await api.delete(`/api/categories/${id}`, config);
                 fetchCategories();
             } catch (error) {
                 console.error('Error deleting category:', error);
@@ -170,13 +169,17 @@ const AdminCategory = () => {
                                         {categories.map((cat) => (
                                             <tr key={cat._id}>
                                                 <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                                                    {cat.image && (
-                                                        <img
-                                                            src={`https://mygrocery-bcw8.onrender.com/${cat.image}`}
-                                                            alt={cat.name}
-                                                            className="w-12 h-12 object-cover rounded"
-                                                        />
-                                                    )}
+                                                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 shadow-sm flex items-center justify-center">
+                                                        {cat.image ? (
+                                                            <img
+                                                                src={`${API_URL}/${cat.image}`}
+                                                                alt={cat.name}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            <ShoppingCart size={16} className="text-gray-300" />
+                                                        )}
+                                                    </div>
                                                 </td>
                                                 <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">{cat.name}</td>
                                                 <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">{cat.description}</td>

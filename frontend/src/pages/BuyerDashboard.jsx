@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../api/config';
 import { Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 
@@ -20,8 +20,8 @@ const BuyerDashboard = () => {
                 },
             };
             const [listsRes, statsRes] = await Promise.all([
-                axios.get('https://mygrocery-bcw8.onrender.com/api/lists', config),
-                axios.get('https://mygrocery-bcw8.onrender.com/api/users/stats/referrals', config)
+                api.get('/api/lists', config),
+                api.get('/api/users/stats/referrals', config)
             ]);
             setLists(listsRes.data);
             setReferralStats(statsRes.data);
@@ -46,7 +46,7 @@ const BuyerDashboard = () => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            const { data } = await axios.post('https://mygrocery-bcw8.onrender.com/api/users/referrals/convert', {}, config);
+            const { data } = await api.post('/api/users/referrals/convert', {}, config);
 
             // Update auth context wallet balance
             const updatedUser = { ...user, walletBalance: data.walletBalance };
@@ -105,11 +105,11 @@ const BuyerDashboard = () => {
                                     <div className="flex items-center gap-4 pt-2">
                                         <div className="bg-gray-50 px-6 py-4 rounded-3xl border-2 border-dashed border-gray-200 flex flex-col">
                                             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Your Code</span>
-                                            <span className="text-2xl font-black text-blue-600 tracking-wider">{referralStats.referralCode}</span>
+                                            <span className="text-2xl font-black text-blue-600 tracking-wider">{referralStats.referralCode || user.referralCode}</span>
                                         </div>
                                         <button
                                             onClick={() => {
-                                                navigator.clipboard.writeText(referralStats.referralCode);
+                                                navigator.clipboard.writeText(referralStats.referralCode || user.referralCode);
                                                 alert('Code copied to clipboard!');
                                             }}
                                             className="px-6 py-4 bg-gray-900 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-gray-800 transition-all active:scale-95"

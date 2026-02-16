@@ -15,9 +15,34 @@ const generateToken = (id) => {
 // @access  Private/Admin
 const getUsers = async (req, res) => {
     try {
-        const users = await User.find({ isDeleted: { $ne: true } });
-        console.log(`getUsers found ${users.length} users`);
-        res.json(users);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 100;
+        const skip = (page - 1) * limit;
+
+        const keyword = req.query.keyword
+            ? {
+                $or: [
+                    { name: { $regex: req.query.keyword, $options: 'i' } },
+                    { email: { $regex: req.query.keyword, $options: 'i' } },
+                ],
+            }
+            : {};
+
+        const sortBy = req.query.sortBy || 'createdAt';
+        const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+
+        const usersCount = await User.countDocuments({ ...keyword, isDeleted: { $ne: true } });
+        const users = await User.find({ ...keyword, isDeleted: { $ne: true } })
+            .sort({ [sortBy]: sortOrder })
+            .limit(limit)
+            .skip(skip);
+
+        res.json({
+            users,
+            page,
+            pages: Math.ceil(usersCount / limit),
+            total: usersCount,
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -81,6 +106,7 @@ const createUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                referralCode: user.referralCode,
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });

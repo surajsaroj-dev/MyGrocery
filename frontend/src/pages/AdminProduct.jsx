@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api, { API_URL } from '../api/config';
 import AuthContext from '../context/AuthContext';
 
 import { Trash2, Plus } from 'lucide-react';
@@ -24,8 +24,8 @@ const AdminProduct = () => {
     const fetchData = async () => {
         try {
             const [prodRes, catRes] = await Promise.all([
-                axios.get('https://mygrocery-bcw8.onrender.com/api/products'),
-                axios.get('https://mygrocery-bcw8.onrender.com/api/categories')
+                api.get('/api/products'),
+                api.get('/api/categories')
             ]);
             setProducts(prodRes.data);
             setCategories(catRes.data);
@@ -68,9 +68,9 @@ const AdminProduct = () => {
             }
 
             if (editMode) {
-                await axios.put(`https://mygrocery-bcw8.onrender.com/api/products/${currentId}`, data, config);
+                await api.put(`/api/products/${currentId}`, data, config);
             } else {
-                await axios.post('https://mygrocery-bcw8.onrender.com/api/products', data, config);
+                await api.post('/api/products', data, config);
             }
 
             setFormData({ name: '', category: '', brand: '', unit: '', description: '', image: '' });
@@ -105,7 +105,7 @@ const AdminProduct = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
-                await axios.delete(`https://mygrocery-bcw8.onrender.com/api/products/${id}`, config);
+                await api.delete(`/api/products/${id}`, config);
                 fetchData();
             } catch (error) {
                 console.error('Error deleting product:', error);
@@ -213,7 +213,7 @@ const AdminProduct = () => {
                                                         <div className="flex items-center">
                                                             <div className="w-12 h-12 flex-shrink-0 mr-3">
                                                                 {p.image ? (
-                                                                    <img src={p.image} className="w-full h-full object-cover rounded-xl shadow-sm bg-gray-100" />
+                                                                    <img src={`${API_URL}/${p.image}`} className="w-full h-full object-cover rounded-xl shadow-sm bg-gray-100" />
                                                                 ) : (
                                                                     <div className="w-full h-full bg-gray-100 rounded-xl flex items-center justify-center text-[8px] font-black text-gray-300">NO IMG</div>
                                                                 )}

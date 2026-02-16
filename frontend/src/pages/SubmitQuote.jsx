@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api, { API_URL } from '../api/config';
 import AuthContext from '../context/AuthContext';
 
 import { Tag, Percent, IndianRupee, ShieldCheck } from 'lucide-react';
@@ -21,7 +21,7 @@ const SubmitQuote = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
-                const { data } = await axios.get(`https://mygrocery-bcw8.onrender.com/api/lists/${listId}`, config);
+                const { data } = await api.get(`/api/lists/${listId}`, config);
                 setList(data);
 
                 // Initialize prices state with basePrice and discount
@@ -92,7 +92,7 @@ const SubmitQuote = () => {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
 
-            await axios.post('https://mygrocery-bcw8.onrender.com/api/quotations', {
+            await api.post('/api/quotations', {
                 listId,
                 prices: priceArray,
                 validUntil: validUntil || null
@@ -147,7 +147,7 @@ const SubmitQuote = () => {
                                             <div className="flex items-start space-x-4">
                                                 {/* Product Image preview */}
                                                 {item.product?.image ? (
-                                                    <img src={item.product.image} alt="" className="w-16 h-16 object-cover rounded-xl bg-gray-100 shadow-sm" />
+                                                    <img src={`${API_URL}/${item.product.image}`} alt="" className="w-16 h-16 object-cover rounded-xl bg-gray-100 shadow-sm" />
                                                 ) : (
                                                     <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center text-[10px] text-gray-400 font-bold uppercase p-2 text-center">No Image</div>
                                                 )}

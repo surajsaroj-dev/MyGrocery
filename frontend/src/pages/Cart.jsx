@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/config';
 import AuthContext from '../context/AuthContext';
 import CartContext from '../context/CartContext';
 
@@ -36,7 +36,7 @@ const Cart = () => {
                 unit: item.product.unit
             }));
 
-            await axios.post('https://mygrocery-bcw8.onrender.com/api/lists', {
+            await api.post('/api/lists', {
                 title: listTitle,
                 items: itemsPayload
             }, config);

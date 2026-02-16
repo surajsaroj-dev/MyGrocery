@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api, { API_URL } from '../api/config';
 import { Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 
@@ -24,9 +24,9 @@ const ProductCatalog = () => {
             try {
                 const config = user ? { headers: { Authorization: `Bearer ${user.token}` } } : {};
                 const [prodRes, catRes, listRes] = await Promise.all([
-                    axios.get('https://mygrocery-bcw8.onrender.com/api/products'),
-                    axios.get('https://mygrocery-bcw8.onrender.com/api/categories'),
-                    user?.role === 'buyer' ? axios.get('https://mygrocery-bcw8.onrender.com/api/lists', config) : Promise.resolve({ data: [] })
+                    api.get('/api/products'),
+                    api.get('/api/categories'),
+                    user?.role === 'buyer' ? api.get('/api/lists', config) : Promise.resolve({ data: [] })
                 ]);
                 setProducts(prodRes.data);
                 setFilteredProducts(prodRes.data);
@@ -69,7 +69,7 @@ const ProductCatalog = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.post(`https://mygrocery-bcw8.onrender.com/api/lists/${selectedListId}/items`, {
+            await api.post(`/api/lists/${selectedListId}/items`, {
                 productId: addingToList._id,
                 quantity: qty,
                 unit: addingToList.unit
@@ -186,7 +186,7 @@ const ProductCatalog = () => {
                                     <div key={product._id} className="bg-white group rounded-3xl p-6 shadow-sm border border-gray-100 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-50/50 transition-all duration-300 flex flex-col">
                                         <div className="relative aspect-square bg-gray-50 rounded-2xl mb-6 overflow-hidden flex items-center justify-center p-4">
                                             {product.image ? (
-                                                <img src={product.image} alt={product.name} className="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500" />
+                                                <img src={`${API_URL}/${product.image}`} alt={product.name} className="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500" />
                                             ) : (
                                                 <div className="text-[10px] font-black text-gray-300 uppercase">Image Coming Soon</div>
                                             )}

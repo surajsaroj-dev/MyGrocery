@@ -26,8 +26,9 @@ import AdminAdvertisements from './pages/AdminAdvertisements';
 import Wallet from './pages/Wallet';
 import Referrals from './pages/Referrals';
 import AdminUsers from './pages/AdminUsers';
-import AdminTransactions from './pages/AdminTransactions'; // New import
+import AdminTransactions from './pages/AdminTransactions';
 import Settings from './pages/Settings';
+import LogisticsDashboard from './pages/LogisticsDashboard';
 
 function App() {
   return (
@@ -56,6 +57,7 @@ function App() {
               <Route path="/admin/advertisements" element={<AdminAdvertisements />} />
               <Route path="/admin/users" element={<AdminUsers />} />
               <Route path="/admin/transactions" element={<AdminTransactions />} />
+              <Route path="/logistics/dashboard" element={<LogisticsDashboard />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
           </Layout>

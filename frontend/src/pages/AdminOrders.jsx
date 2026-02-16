@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, Fragment } from 'react';
-import axios from 'axios';
+import api from '../api/config';
 import AuthContext from '../context/AuthContext';
 
 import { Eye, ChevronDown, ChevronUp } from 'lucide-react';
@@ -7,27 +7,48 @@ import { Eye, ChevronDown, ChevronUp } from 'lucide-react';
 const AdminOrders = () => {
     const { user } = useContext(AuthContext);
     const [orders, setOrders] = useState([]);
+    const [logisticsUsers, setLogisticsUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [expandedOrder, setExpandedOrder] = useState(null);
 
     useEffect(() => {
         if (!user) return;
-        const fetchOrders = async () => {
+        const fetchData = async () => {
             try {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
-                const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/orders', config);
-                setOrders(data);
+                const [ordersRes, usersRes] = await Promise.all([
+                    api.get('/api/orders', config),
+                    api.get('/api/users', config)
+                ]);
+                setOrders(ordersRes.data);
+                setLogisticsUsers(usersRes.data.users.filter(u => u.role === 'logistics'));
                 setLoading(false);
             } catch (error) {
-                console.error('Error fetching orders:', error);
+                console.error('Error fetching data:', error);
                 setLoading(false);
             }
         };
 
-        fetchOrders();
+        fetchData();
     }, [user?.token]);
+
+    const handleAssign = async (orderId, logisticsId) => {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${user.token}` },
+            };
+            await api.put(`/api/orders/${orderId}/assign`, { logisticsId }, config);
+            // Refresh orders
+            const { data } = await api.get('/api/orders', config);
+            setOrders(data);
+            alert('Logistics partner assigned!');
+        } catch (error) {
+            console.error('Error assigning logistics:', error);
+            alert('Failed to assign logistics partner');
+        }
+    };
 
     const toggleExpand = (orderId) => {
         if (expandedOrder === orderId) {
@@ -144,10 +165,29 @@ const AdminOrders = () => {
                                                         <div>
                                                             <h4 className="mb-2 font-bold text-gray-700">Payment & Delivery Details</h4>
                                                             <div className="p-4 bg-white rounded shadow-sm">
-                                                                <p><strong>Transaction ID:</strong> {order._id}</p>
-                                                                <p><strong>Date:</strong> {new Date(order.createdAt).toLocaleString()}</p>
-                                                                <p className="mt-2"><strong>Buyer Contact:</strong> {order.buyerId?.phone || 'N/A'}</p>
-                                                                <p><strong>Address:</strong> {order.buyerId?.address || 'N/A'}</p>
+                                                                <p className="mt-2 text-sm"><strong>Buyer Contact:</strong> {order.buyerId?.phone || 'N/A'}</p>
+                                                                <p className="text-sm"><strong>Address:</strong> {order.buyerId?.address || 'N/A'}</p>
+
+                                                                <div className="mt-6 pt-6 border-t border-gray-100">
+                                                                    <h4 className="mb-3 font-black text-xs uppercase tracking-widest text-gray-400">Logistics Assignment</h4>
+                                                                    <div className="flex gap-2">
+                                                                        <select
+                                                                            className="flex-grow p-2.5 text-sm font-bold bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500"
+                                                                            value={order.logisticsId?._id || ''}
+                                                                            onChange={(e) => handleAssign(order._id, e.target.value)}
+                                                                        >
+                                                                            <option value="">Select Partner</option>
+                                                                            {logisticsUsers.map(u => (
+                                                                                <option key={u._id} value={u._id}>{u.name}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                        {order.logisticsId && (
+                                                                            <div className="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-xs font-black flex items-center">
+                                                                                ASSIGNED
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>

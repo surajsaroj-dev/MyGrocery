@@ -1,5 +1,6 @@
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api, { API_URL } from '../api/config';
 import AuthContext from '../context/AuthContext';
 
 import { CheckCircle, Info, TrendingDown, DollarSign, Package, ShoppingBag, Phone, Star, Clock, Copy, ArrowRight } from 'lucide-react';
@@ -36,16 +37,16 @@ const ListDetails = () => {
                 };
 
                 // Fetch List Details
-                const listRes = await axios.get(`https://mygrocery-bcw8.onrender.com/api/lists/${id}`, config);
+                const listRes = await api.get(`/api/lists/${id}`, config);
                 setList(listRes.data);
 
                 // Fetch Quotations for this list
-                const quotesRes = await axios.get(`https://mygrocery-bcw8.onrender.com/api/quotations?listId=${id}`, config);
+                const quotesRes = await api.get(`/api/quotations?listId=${id}`, config);
                 setQuotations(quotesRes.data);
 
                 // Socket setup
                 if (!activeSocket) {
-                    activeSocket = io('https://mygrocery-bcw8.onrender.com', {
+                    activeSocket = io(API_URL, {
                         transports: ['polling', 'websocket'],
                         reconnectionAttempts: 5
                     });
@@ -96,7 +97,7 @@ const ListDetails = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const { data } = await axios.post('https://mygrocery-bcw8.onrender.com/api/orders', {
+            const { data } = await api.post('/api/orders', {
                 quotationId: selectedQuote._id,
                 paymentMethod: paymentMethod
             }, config);
@@ -213,7 +214,7 @@ const ListDetails = () => {
                                                     return (
                                                         <>
                                                             {img ? (
-                                                                <img src={img} className="w-12 h-12 rounded-xl object-cover bg-gray-100 shadow-sm" alt="" />
+                                                                <img src={`${API_URL}/${img}`} className="w-12 h-12 rounded-xl object-cover bg-gray-100 shadow-sm" alt="" />
                                                             ) : (
                                                                 <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-[8px] font-black text-gray-400 uppercase p-1 text-center">No Image</div>
                                                             )}

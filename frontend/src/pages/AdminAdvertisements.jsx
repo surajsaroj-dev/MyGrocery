@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../api/config';
 import AuthContext from '../context/AuthContext';
 
 import { Trash2, Plus, Edit2, Eye, EyeOff } from 'lucide-react';
@@ -31,7 +31,7 @@ const AdminAdvertisements = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/advertisements/all', config);
+            const { data } = await api.get('/api/advertisements/all', config);
             setAds(data);
             setLoading(false);
         } catch (error) {
@@ -48,9 +48,9 @@ const AdminAdvertisements = () => {
             };
 
             if (editingAd) {
-                await axios.put(`https://mygrocery-bcw8.onrender.com/api/advertisements/${editingAd._id}`, formData, config);
+                await api.put(`/api/advertisements/${editingAd._id}`, formData, config);
             } else {
-                await axios.post('https://mygrocery-bcw8.onrender.com/api/advertisements', formData, config);
+                await api.post('/api/advertisements', formData, config);
             }
 
             setShowForm(false);
@@ -93,7 +93,7 @@ const AdminAdvertisements = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.delete(`https://mygrocery-bcw8.onrender.com/api/advertisements/${id}`, config);
+            await api.delete(`/api/advertisements/${id}`, config);
             fetchAds();
         } catch (error) {
             console.error('Error deleting ad:', error);
@@ -106,7 +106,7 @@ const AdminAdvertisements = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.put(`https://mygrocery-bcw8.onrender.com/api/advertisements/${ad._id}`,
+            await api.put(`/api/advertisements/${ad._id}`,
                 { ...ad, isActive: !ad.isActive },
                 config
             );

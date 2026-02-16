@@ -16,16 +16,16 @@ const getCategories = async (req, res) => {
 // @route   POST /api/categories
 // @access  Private/Admin
 const createCategory = async (req, res) => {
-    console.log('createCategory req.body:', req.body);
-    console.log('createCategory req.file:', req.file);
-    const { name, description } = req.body;
-    const image = req.file ? req.file.path : null;
-
     try {
+        const { name, description } = req.body;
+        let image = '';
+        if (req.file) {
+            image = req.file.path.replace(/\\/g, '/');
+        }
+
         const categoryExists = await Category.findOne({ name, isDeleted: false });
 
         if (categoryExists) {
-            console.log('Category already exists');
             return res.status(400).json({ message: 'Category already exists' });
         }
 
@@ -65,9 +65,6 @@ const deleteCategory = async (req, res) => {
 // @route   PUT /api/categories/:id
 // @access  Private/Admin
 const updateCategory = async (req, res) => {
-    console.log('updateCategory id:', req.params.id);
-    console.log('updateCategory body:', req.body);
-    console.log('updateCategory file:', req.file);
     try {
         const { name, description } = req.body;
         const category = await Category.findById(req.params.id);
@@ -76,9 +73,8 @@ const updateCategory = async (req, res) => {
             category.name = name || category.name;
             category.description = description || category.description;
             if (req.file) {
-                category.image = req.file.path;
+                category.image = req.file.path.replace(/\\/g, '/');
             }
-
             const updatedCategory = await category.save();
             res.json(updatedCategory);
         } else {

@@ -11,7 +11,8 @@ const Layout = ({ children }) => {
         '/login',
         '/register',
         '/forgot-password',
-        '/reset-password'
+        '/reset-password',
+        '/logistics/dashboard'
     ];
 
     const shouldShowLayout = !noLayoutRoutes.includes(location.pathname);

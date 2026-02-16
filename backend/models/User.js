@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['buyer', 'vendor', 'admin'],
+        enum: ['buyer', 'vendor', 'admin', 'logistics'],
         default: 'buyer',
     },
     address: {
@@ -63,5 +63,13 @@ const userSchema = new mongoose.Schema({
         default: true,
     },
 }, { timestamps: true });
+
+// Pre-save hook to generate referral code if it doesn't exist
+userSchema.pre('save', async function () {
+    if (!this.referralCode) {
+        const crypto = require('crypto');
+        this.referralCode = crypto.randomBytes(4).toString('hex').toUpperCase();
+    }
+});
 
 module.exports = mongoose.model('User', userSchema);

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/config';
 
 const AdSidebar = () => {
     const [ads, setAds] = useState([]);
@@ -10,7 +10,7 @@ const AdSidebar = () => {
 
     const fetchAds = async () => {
         try {
-            const { data } = await axios.get('https://mygrocery-bcw8.onrender.com/api/advertisements');
+            const { data } = await api.get('/api/advertisements');
             const sidebarAds = data.filter(ad => ad.position === 'sidebar');
             setAds(sidebarAds);
         } catch (error) {
