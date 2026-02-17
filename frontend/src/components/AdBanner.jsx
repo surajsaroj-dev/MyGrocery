@@ -22,10 +22,17 @@ const AdBanner = () => {
     const fetchAds = async () => {
         try {
             const { data } = await api.get('/api/advertisements');
-            const bannerAds = data.filter(ad => ad.position === 'banner');
-            setAds(bannerAds);
+            // Ensure data is an array before filtering
+            if (Array.isArray(data)) {
+                const bannerAds = data.filter(ad => ad.position === 'banner');
+                setAds(bannerAds);
+            } else {
+                console.warn('Advertisements API returned non-array data:', data);
+                setAds([]);
+            }
         } catch (error) {
             console.error('Error fetching ads:', error);
+            setAds([]);
         }
     };
 

@@ -5,6 +5,7 @@ import { CartProvider } from './context/CartContext';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import LandingPage from './pages/LandingPage';
 
 import Dashboard from './components/Dashboard';
 import CreateList from './pages/CreateList';
@@ -41,7 +42,8 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/create-list" element={<CreateList />} />
               <Route path="/list/:id" element={<ListDetails />} />
               <Route path="/submit-quote/:listId" element={<SubmitQuote />} />

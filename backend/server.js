@@ -47,7 +47,7 @@ const server = http.createServer(app);
 const { Server } = require('socket.io');
 const io = new Server(server, {
     cors: {
-        origin: ["https://my-grocery-olive.vercel.app","http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"],
+        origin: ["https://my-grocery-olive.vercel.app", "http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"],
         methods: ["GET", "POST"],
         credentials: true
     },

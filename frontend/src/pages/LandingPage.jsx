@@ -11,9 +11,16 @@ const LandingPage = () => {
         const fetchCategories = async () => {
             try {
                 const { data } = await api.get('/api/categories');
-                setCategories(data.slice(0, 6)); // Show top 6 categories
+                // Ensure data is an array before slicing
+                if (Array.isArray(data)) {
+                    setCategories(data.slice(0, 6)); // Show top 6 categories
+                } else {
+                    console.warn('Categories API returned non-array data:', data);
+                    setCategories([]);
+                }
             } catch (error) {
                 console.error('Error fetching categories:', error);
+                setCategories([]);
             }
         };
         fetchCategories();
